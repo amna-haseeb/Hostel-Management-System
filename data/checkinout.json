@@ -1,0 +1,31 @@
+[
+    {
+        "reg_no": "2025-ds-04",
+        "check_in": "",
+        "check_out": "",
+        "status": "Out",
+        "checkin_date": "324",
+        "checkin_time": "24",
+        "checkout_date": "42",
+        "checkout_time": "24"
+    },
+    {
+        "reg_no": "21",
+        "checkin_date": "2025-12-28",
+        "checkin_time": "18:20",
+        "checkout_date": "2025-12-28",
+        "checkout_time": "18:20"
+    },
+    {
+        "reg_no": "2025-ds-21",
+        "check_in": "",
+        "check_out": "",
+        "status": "Out"
+    },
+    {
+        "reg_no": "2025-ds-04",
+        "check_in": "",
+        "check_out": "",
+        "status": "Out"
+    }
+]

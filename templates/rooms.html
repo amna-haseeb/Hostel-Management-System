@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rooms | NGH</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/rooms.css') }}">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}" alt="NGH Logo">
+    </div>
+    <ul>
+        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('floors') }}">Floors</a></li>
+        <li><a href="{{ url_for('student_info') }}">Student Info</a></li>
+        <li><a href="{{ url_for('attendance') }}">Attendance</a></li>
+        <li><a href="{{ url_for('mess') }}">Mess Info</a></li>
+        <li><a href="{{ url_for('checkin') }}">Check-In/Out</a></li>
+        <li><a href="{{ url_for('dues') }}">Dues</a></li>
+        <li><a href="{{ url_for('fund') }}">Fine/Funds</a></li>
+        <li><a href="{{ url_for('about') }}">About Us</a></li>
+        <li><a class="logout" href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <h1>Room Details</h1>
+
+    <!-- Add Room -->
+    <div class="add-room">
+        <input type="text" id="new_room_no" placeholder="Room No">
+        <input type="number" id="new_floor_no" placeholder="Floor No">
+        <input type="number" id="new_capacity" placeholder="Capacity">
+        <button onclick="addRoom()">Add Room</button>
+    </div>
+
+    <table id="roomTable">
+        <thead>
+            <tr>
+                <th>Room No</th>
+                <th>Floor No</th>
+                <th>Capacity</th>
+                <th>Occupied</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in rooms %}
+            <tr data-room="{{ r.room_no }}">
+                <td>{{ r.room_no }}</td>
+                <td contenteditable="true" class="floor_no">{{ r.floor_no }}</td>
+                <td contenteditable="true" class="capacity">{{ r.capacity }}</td>
+                <td>{{ r.occupied }}</td>
+                <td>
+                    <button onclick="updateRoom('{{ r.room_no }}', this)">Update</button>
+                    <button onclick="removeRoom('{{ r.room_no }}', this)">Remove</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function updateRoom(room_no, btn){
+    const row = btn.closest('tr');
+    const floor_no = row.querySelector('.floor_no').innerText;
+    const capacity = row.querySelector('.capacity').innerText;
+
+    fetch('/update_room',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({room_no, floor_no, capacity})
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.success) alert('Room updated!');
+    });
+}
+
+function removeRoom(room_no, btn){
+    if(!confirm('Remove this room?')) return;
+    fetch('/remove_room',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({room_no})
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.success) btn.closest('tr').remove();
+    });
+}
+
+function addRoom(){
+    const room_no = document.getElementById('new_room_no').value;
+    const floor_no = document.getElementById('new_floor_no').value;
+    const capacity = document.getElementById('new_capacity').value;
+
+    if(!room_no || !floor_no || !capacity){ alert('Enter all fields'); return; }
+
+    fetch('/add_room',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({room_no, floor_no, capacity})
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.success) location.reload();
+        else alert(data.message);
+    });
+}
+</script>
+
+</body>
+</html>

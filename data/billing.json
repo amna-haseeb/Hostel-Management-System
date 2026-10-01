@@ -1,0 +1,29 @@
+[
+    {
+        "reg_no": "2025-ds-04",
+        "mess_bill": 0,
+        "mess_status": "Unpaid",
+        "hostel_dues": 0,
+        "dues_status": "Unpaid",
+        "payable_fund": 0,
+        "fund_status": "Unpaid"
+    },
+    {
+        "reg_no": "2025-ds-21",
+        "mess_bill": 0,
+        "mess_status": "Unpaid",
+        "hostel_dues": 0,
+        "dues_status": "Unpaid",
+        "payable_fund": 0,
+        "fund_status": "Unpaid"
+    },
+    {
+        "reg_no": "2025-ds-04",
+        "mess_bill": 0,
+        "mess_status": "Unpaid",
+        "hostel_dues": 0,
+        "dues_status": "Unpaid",
+        "payable_fund": 0,
+        "fund_status": "Unpaid"
+    }
+]

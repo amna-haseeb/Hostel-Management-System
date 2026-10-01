@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mess Information | NGH</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mess.css') }}">
+<style>
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    input { width: 70px; }
+    button { padding: 4px 6px; margin: 2px; }
+    .add-mess { margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<!-- HAMBURGER MENU -->
+<div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+
+<!-- SIDE MENU -->
+<div class="side-menu" id="sideMenu">
+    <a href="{{ url_for('student_info') }}">Student Info</a>
+    <a href="{{ url_for('floors') }}">Floors</a>
+    <a href="{{ url_for('rooms') }}">Rooms</a>
+    <a href="{{ url_for('attendance') }}">Attendance</a>
+    <a href="{{ url_for('mess') }}">Mess Info</a>
+    <a href="{{ url_for('checkin') }}">Check-In / Out</a>
+    <a href="{{ url_for('dues') }}">Dues</a>
+    <a href="{{ url_for('fund') }}">Fine/Funds</a>
+    <a href="{{ url_for('about') }}">About Us</a>
+</div>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}">
+    <h2>New Girls Hostel</h2>
+</div>
+
+<!-- MESS TABLE -->
+<div class="container">
+    <h3>Mess Information</h3>
+
+    <!-- Add Student Bill -->
+    <div class="add-mess">
+        <input type="text" id="new_reg_no" placeholder="Reg No" required>
+        <input type="number" id="new_month1" placeholder="Month1" required>
+        <input type="number" id="new_month2" placeholder="Month2" required>
+        <input type="number" id="new_month3" placeholder="Month3" required>
+        <button onclick="addMess()">Add Student</button>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="messTable">
+            <thead>
+                <tr>
+                    <th>Student Reg No</th>
+                    <th>Month 1 Bill</th>
+                    <th>Status 1</th>
+                    <th>Month 2 Bill</th>
+                    <th>Status 2</th>
+                    <th>Month 3 Bill</th>
+                    <th>Status 3</th>
+                    <th>Total Bill</th>
+                    <th>Overall Status</th>
+                    <th>Remaining Dues</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in mess %}
+                <tr data-reg="{{ m.reg_no }}">
+                    <td>{{ m.reg_no }}</td>
+                    <td contenteditable="true" class="month1">{{ m.month1 }}</td>
+                    <td>
+                        <button onclick="toggleStatus(this,'status1')">{{ m.status1 }}</button>
+                    </td>
+                    <td contenteditable="true" class="month2">{{ m.month2 }}</td>
+                    <td>
+                        <button onclick="toggleStatus(this,'status2')">{{ m.status2 }}</button>
+                    </td>
+                    <td contenteditable="true" class="month3">{{ m.month3 }}</td>
+                    <td>
+                        <button onclick="toggleStatus(this,'status3')">{{ m.status3 }}</button>
+                    </td>
+                    <td class="total_bill">{{ m.total_bill }}</td>
+                    <td class="overall_status">{{ m.overall_status }}</td>
+                    <td class="remaining_dues">{{ m.remaining_dues }}</td>
+                    <td>
+                        <button onclick="updateMess('{{ m.reg_no }}', this)">Update</button>
+                        <button onclick="removeMess('{{ m.reg_no }}', this)">Remove</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.style.right = (menu.style.right === "0px") ? "-260px" : "0px";
+}
+
+// Toggle Paid/Unpaid
+function toggleStatus(btn, field){
+    btn.innerText = (btn.innerText === 'Paid') ? 'Unpaid' : 'Paid';
+}
+
+// Update a mess record
+function updateMess(reg_no, btn){
+    const row = btn.closest('tr');
+    const month1 = parseInt(row.querySelector('.month1').innerText);
+    const month2 = parseInt(row.querySelector('.month2').innerText);
+    const month3 = parseInt(row.querySelector('.month3').innerText);
+    const status1 = row.querySelector('button[onclick*="status1"]').innerText;
+    const status2 = row.querySelector('button[onclick*="status2"]').innerText;
+    const status3 = row.querySelector('button[onclick*="status3"]').innerText;
+    const total_bill = month1 + month2 + month3;
+    const overall_status = (status1==='Paid' && status2==='Paid' && status3==='Paid') ? 'Paid' : 'Unpaid';
+    const remaining_dues = total_bill - ((status1==='Paid'?month1:0) + (status2==='Paid'?month2:0) + (status3==='Paid'?month3:0));
+
+    row.querySelector('.total_bill').innerText = total_bill;
+    row.querySelector('.overall_status').innerText = overall_status;
+    row.querySelector('.remaining_dues').innerText = remaining_dues;
+
+    fetch('/update_mess',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({reg_no, month1, month2, month3, status1, status2, status3})
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.success) alert('Record updated!');
+    });
+}
+
+// Remove a mess record
+function removeMess(reg_no, btn){
+    if(!confirm('Remove this record?')) return;
+    fetch('/remove_mess',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({reg_no})
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.success) btn.closest('tr').remove();
+    });
+}
+
+// Add new student mess record
+function addMess(){
+    const reg_no = document.getElementById('new_reg_no').value;
+    const month1 = document.getElementById('new_month1').value;
+    const month2 = document.getElementById('new_month2').value;
+    const month3 = document.getElementById('new_month3').value;
+
+    if(!reg_no || !month1 || !month2 || !month3){ alert('Enter all fields'); return; }
+
+    fetch('/add_mess',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({reg_no, month1, month2, month3})
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.success) location.reload();
+        else alert(data.message);
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Floors | NGH</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/floors.css') }}">
+<style>
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    input { width: 80px; }
+    button { padding: 4px 8px; margin: 2px; }
+    .add-floor { margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}" alt="NGH Logo">
+    </div>
+    <ul>
+        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('student_info') }}">Student Info</a></li>
+        <li><a href="{{ url_for('rooms') }}">Rooms</a></li>
+        <li><a href="{{ url_for('attendance') }}">Attendance</a></li>
+        <li><a href="{{ url_for('mess') }}">Mess Info</a></li>
+        <li><a href="{{ url_for('checkin') }}">Check-In/Out</a></li>
+        <li><a href="{{ url_for('dues') }}">Dues</a></li>
+        <li><a href="{{ url_for('fund') }}">Fine/Funds</a></li>
+        <li><a href="{{ url_for('about') }}">About Us</a></li>
+        <li><a class="logout" href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <h1>Floor Details</h1>
+
+    <!-- Add Floor -->
+    <div class="add-floor">
+        <input type="number" id="new_floor_no" placeholder="Floor No" required>
+        <input type="number" id="new_total_rooms" placeholder="Total Rooms" required>
+        <input type="number" id="new_occupied_rooms" placeholder="Occupied Rooms" required>
+        <button onclick="addFloor()">Add Floor</button>
+    </div>
+
+    <table id="floorTable">
+        <thead>
+            <tr>
+                <th>Floor No</th>
+                <th>Total Rooms</th>
+                <th>Occupied Rooms</th>
+                <th>Available Rooms</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for floor in floors %}
+            <tr data-floor="{{ floor.floor_no }}">
+                <td>{{ floor.floor_no }}</td>
+                <td contenteditable="true" class="total_rooms">{{ floor.total_rooms }}</td>
+                <td contenteditable="true" class="occupied_rooms">{{ floor.occupied_rooms }}</td>
+                <td class="available_rooms">{{ floor.total_rooms - floor.occupied_rooms }}</td>
+                <td>
+                    <button onclick="updateFloor('{{ floor.floor_no }}', this)">Update</button>
+                    <button onclick="removeFloor('{{ floor.floor_no }}', this)">Remove</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function updateFloor(floor_no, btn){
+    const row = btn.closest('tr');
+    let total_rooms = parseInt(row.querySelector('.total_rooms').innerText);
+    let occupied_rooms = parseInt(row.querySelector('.occupied_rooms').innerText);
+
+    if(isNaN(total_rooms) || isNaN(occupied_rooms) || occupied_rooms > total_rooms){
+        alert("Invalid input! Occupied cannot exceed Total Rooms.");
+        return;
+    }
+
+    // Auto-update Available Rooms
+    const available = total_rooms - occupied_rooms;
+    row.querySelector('.available_rooms').innerText = available;
+
+    fetch('/update_floor', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({floor_no, total_rooms, occupied_rooms})
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.success) alert('Floor updated!');
+    });
+}
+
+function removeFloor(floor_no, btn){
+    if(!confirm('Remove this floor?')) return;
+    fetch('/remove_floor',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({floor_no})
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.success) btn.closest('tr').remove();
+    });
+}
+
+function addFloor(){
+    const floor_no = document.getElementById('new_floor_no').value;
+    const total_rooms = document.getElementById('new_total_rooms').value;
+    const occupied_rooms = document.getElementById('new_occupied_rooms').value;
+
+    if(!floor_no || !total_rooms || !occupied_rooms) { alert('Enter all fields'); return; }
+    if(parseInt(occupied_rooms) > parseInt(total_rooms)){ alert('Occupied cannot exceed Total'); return; }
+
+    fetch('/add_floor',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({floor_no, total_rooms, occupied_rooms})
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.success) location.reload();
+        else alert(data.message);
+    });
+}
+</script>
+
+</body>
+</html>

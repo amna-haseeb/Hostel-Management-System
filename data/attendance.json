@@ -1,0 +1,28 @@
+[
+    {
+        "reg_no": "2025-ds-04",
+        "status": "Present",
+        "check_in_date": "",
+        "check_in_time": "",
+        "check_out_date": "",
+        "check_out_time": "",
+        "date": "2025-12-28",
+        "time": "18:17"
+    },
+    {
+        "reg_no": "2025-ds-21",
+        "status": "Absent",
+        "check_in_date": "",
+        "check_in_time": "",
+        "check_out_date": "",
+        "check_out_time": ""
+    },
+    {
+        "reg_no": "2025-ds-04",
+        "status": "Absent",
+        "check_in_date": "",
+        "check_in_time": "",
+        "check_out_date": "",
+        "check_out_time": ""
+    }
+]

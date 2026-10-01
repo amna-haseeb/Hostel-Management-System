@@ -1,0 +1,29 @@
+[
+    {
+        "id": "",
+        "reg_no": "2025-ds-04",
+        "fine_amount": 0,
+        "fine_status": "Unpaid",
+        "fund_amount": 0,
+        "fund_status": "Unpaid",
+        "remaining_dues": 0
+    },
+    {
+        "id": "",
+        "reg_no": "2025-ds-21",
+        "fine_amount": 0,
+        "fine_status": "Unpaid",
+        "fund_amount": 0,
+        "fund_status": "Unpaid",
+        "remaining_dues": 0
+    },
+    {
+        "id": "",
+        "reg_no": "2025-ds-04",
+        "fine_amount": 0,
+        "fine_status": "Unpaid",
+        "fund_amount": 0,
+        "fund_status": "Unpaid",
+        "remaining_dues": 0
+    }
+]

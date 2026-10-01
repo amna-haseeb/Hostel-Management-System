@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance | NGH</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/attendance.css') }}">
+<style>
+    /* Inline table edit styles */
+    .editable {
+        cursor: pointer;
+    }
+    .save-btn, .cancel-btn, .delete-btn {
+        margin: 0 2px;
+        padding: 2px 6px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<!-- ===== HAMBURGER MENU ICON ===== -->
+<div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+
+<!-- ===== SIDE MENU ===== -->
+<div class="side-menu" id="sideMenu">
+    <a href="{{ url_for('student_info') }}">Student Info</a>
+    <a href="{{ url_for('floors') }}">Floors</a>
+    <a href="{{ url_for('rooms') }}">Rooms</a>
+    <a href="{{ url_for('attendance') }}">Attendance</a>
+    <a href="{{ url_for('mess') }}">Mess Info</a>
+    <a href="{{ url_for('checkin') }}">Check-In / Out</a>
+    <a href="{{ url_for('dues') }}">Dues</a>
+    <a href="{{ url_for('fund') }}">Fine/Funds</a>
+    <a href="{{ url_for('about') }}">About Us</a>
+</div>
+
+<!-- ===== NAVBAR ===== -->
+<div class="navbar">
+    <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}">
+    <h2>New Girls Hostel</h2>
+</div>
+
+<!-- ===== ATTENDANCE TABLE ===== -->
+<div class="container">
+    <h3>Attendance Information</h3>
+    <button onclick="addRow()">Add Attendance</button>
+    <div class="table-wrapper">
+        <table id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>Student Reg No</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in attendance %}
+                <tr data-id="{{ a.id }}">
+                    <td class="editable">{{ a.reg_no }}</td>
+                    <td class="editable">{{ a.date }}</td>
+                    <td class="editable">{{ a.time }}</td>
+                    <td class="editable">{{ a.status }}</td>
+                    <td>
+                        <button class="save-btn" onclick="saveRow(this)">Save</button>
+                        <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.style.right = (menu.style.right === "0px") ? "-260px" : "0px";
+}
+
+// Add a new empty row
+function addRow() {
+    const table = document.getElementById("attendanceTable").getElementsByTagName('tbody')[0];
+    const row = table.insertRow();
+    row.innerHTML = `
+        <td class="editable" contenteditable="true"></td>
+        <td class="editable" contenteditable="true"></td>
+        <td class="editable" contenteditable="true"></td>
+        <td class="editable" contenteditable="true"></td>
+        <td>
+            <button class="save-btn" onclick="saveRow(this)">Save</button>
+            <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+        </td>
+    `;
+}
+
+// Save row (new or edited)
+function saveRow(btn) {
+    const row = btn.closest('tr');
+    const id = row.getAttribute('data-id'); // undefined for new row
+    const data = {
+        reg_no: row.cells[0].innerText,
+        date: row.cells[1].innerText,
+        time: row.cells[2].innerText,
+        status: row.cells[3].innerText
+    };
+
+    fetch('/save_attendance' + (id ? `/${id}` : ''), {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(resp => {
+        if(resp.success){
+            row.setAttribute('data-id', resp.id); // set ID for new rows
+            alert('Saved successfully!');
+        } else {
+            alert('Error saving record!');
+        }
+    });
+}
+
+// Delete row
+function deleteRow(btn) {
+    const row = btn.closest('tr');
+    const id = row.getAttribute('data-id');
+    if(!id) { row.remove(); return; } // just remove if not saved yet
+
+    fetch(`/delete_attendance/${id}`, { method: 'POST' })
+    .then(res => res.json())
+    .then(resp => {
+        if(resp.success){
+            row.remove();
+            alert('Deleted successfully!');
+        } else {
+            alert('Error deleting record!');
+        }
+    });
+}
+</script>
+
+</body>
+</html>

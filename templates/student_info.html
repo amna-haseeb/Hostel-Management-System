@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Info | NGH</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/student_info.css') }}">
+
+<style>
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    .editable { cursor: pointer; }
+    .save-btn, .delete-btn { margin: 0 2px; padding: 4px 8px; cursor: pointer; }
+    .menu-icon { cursor: pointer; font-size: 24px; padding: 10px; }
+</style>
+</head>
+<body>
+
+<!-- ===== HAMBURGER ===== -->
+<div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+
+<!-- ===== SIDE MENU ===== -->
+<div class="side-menu" id="sideMenu">
+    <a href="{{ url_for('student_info') }}">Student Info</a>
+    <a href="{{ url_for('floors') }}">Floors</a>
+    <a href="{{ url_for('rooms') }}">Rooms</a>
+    <a href="{{ url_for('attendance') }}">Attendance</a>
+    <a href="{{ url_for('mess') }}">Mess Info</a>
+    <a href="{{ url_for('checkin') }}">Check-In / Out</a>
+    <a href="{{ url_for('dues') }}">Dues</a>
+    <a href="{{ url_for('fund') }}">Fine/Funds</a>
+    <a href="{{ url_for('about') }}">About Us</a>
+</div>
+
+<!-- ===== NAVBAR ===== -->
+<div class="navbar">
+    <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}" alt="Logo">
+    <h2>New Girls Hostel</h2>
+</div>
+
+<!-- ===== CONTENT ===== -->
+<div class="container">
+    <h3>Student Information</h3>
+    <button onclick="addRow()">Add Student</button>
+
+    <table id="studentTable">
+        <thead>
+            <tr>
+                <th>Reg No</th>
+                <th>Name</th>
+                <th>Room</th>
+                <th>Billing</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for student in students %}
+        <tr data-id="{{ student.reg_no }}">
+            <td class="editable" contenteditable="true">{{ student.reg_no }}</td>
+            <td class="editable" contenteditable="true">{{ student.name | default('') }}</td>
+            <td class="editable" contenteditable="true">{{ student.room | default('') }}</td>
+            <td class="editable" contenteditable="true">{{ student.billing | default(0) }}</td>
+            <td class="editable" contenteditable="true">{{ student.status | default('Unpaid') }}</td>
+            <td>
+                <button class="save-btn" onclick="saveRow(this)">Save</button>
+                <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- ===== SCRIPT ===== -->
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.style.right = (menu.style.right === "0px") ? "-260px" : "0px";
+}
+
+// Add new row
+function addRow() {
+    const tbody = document.querySelector("#studentTable tbody");
+    const row = tbody.insertRow();
+    row.innerHTML = `
+        <td contenteditable="true"></td>
+        <td contenteditable="true"></td>
+        <td contenteditable="true"></td>
+        <td contenteditable="true">0</td>
+        <td contenteditable="true">Unpaid</td>
+        <td>
+            <button class="save-btn" onclick="saveRow(this)">Save</button>
+            <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+        </td>
+    `;
+}
+
+// Save / Update student
+function saveRow(btn) {
+    const row = btn.closest('tr');
+    const reg_no = row.cells[0].innerText.trim();
+
+    if (!reg_no) {
+        alert("Reg No is required");
+        return;
+    }
+
+    const student = {
+        reg_no: reg_no,
+        name: row.cells[1].innerText.trim(),
+        room: row.cells[2].innerText.trim(),
+        billing: row.cells[3].innerText.trim(),
+        status: row.cells[4].innerText.trim()
+    };
+
+    fetch('/update_student', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(student)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+            fetch('/add_student', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(student)
+            })
+            .then(res => res.json())
+            .then(() => {
+                row.setAttribute('data-id', reg_no);
+                alert("Student added successfully");
+            });
+        } else {
+            row.setAttribute('data-id', reg_no);
+            alert("Student updated successfully");
+        }
+    });
+}
+
+// Delete student
+function deleteRow(btn) {
+    const row = btn.closest('tr');
+    const reg_no = row.getAttribute('data-id');
+
+    if (!reg_no) {
+        row.remove();
+        return;
+    }
+
+    if (!confirm("Delete this student?")) return;
+
+    fetch(`/delete_student/${reg_no}`, { method: 'POST' })
+    .then(res => res.json())
+    .then(() => {
+        row.remove();
+        alert("Student deleted");
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-In/Out | NGH</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/check_inandout.css') }}">
+</head>
+<body>
+
+<!-- HAMBURGER MENU -->
+<div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+
+<!-- SIDE MENU -->
+<div class="side-menu" id="sideMenu">
+    <a href="{{ url_for('student_info') }}">Student Info</a>
+    <a href="{{ url_for('floors') }}">Floors</a>
+    <a href="{{ url_for('rooms') }}">Rooms</a>
+    <a href="{{ url_for('attendance') }}">Attendance</a>
+    <a href="{{ url_for('mess') }}">Mess Info</a>
+    <a href="{{ url_for('checkin') }}">Check-In / Out</a>
+    <a href="{{ url_for('dues') }}">Dues</a>
+    <a href="{{ url_for('fund') }}">Fine/Funds</a>
+    <a href="{{ url_for('about') }}">About Us</a>
+</div>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}">
+    <h2>New Girls Hostel</h2>
+</div>
+
+<!-- TABLE CONTAINER -->
+<div class="container">
+    <h3>Check-In / Out Records</h3>
+
+    <!-- Add Record -->
+    <div class="add-record">
+        <input type="text" id="new_reg_no" placeholder="Reg No">
+        <input type="date" id="new_checkin_date">
+        <input type="time" id="new_checkin_time">
+        <input type="date" id="new_checkout_date">
+        <input type="time" id="new_checkout_time">
+        <button onclick="addRecord()">Add Record</button>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="checkinTable">
+            <thead>
+                <tr>
+                    <th>Student Reg No</th>
+                    <th>Check-in Date</th>
+                    <th>Check-in Time</th>
+                    <th>Check-out Date</th>
+                    <th>Check-out Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in checkinout %}
+                <tr data-reg="{{ record.reg_no }}">
+                    <td>{{ record.reg_no }}</td>
+                    <td contenteditable="true" class="checkin_date">{{ record.checkin_date }}</td>
+                    <td contenteditable="true" class="checkin_time">{{ record.checkin_time }}</td>
+                    <td contenteditable="true" class="checkout_date">{{ record.checkout_date }}</td>
+                    <td contenteditable="true" class="checkout_time">{{ record.checkout_time }}</td>
+                    <td>
+                        <button onclick="updateRecord('{{ record.reg_no }}', this)">Update</button>
+                        <button onclick="removeRecord('{{ record.reg_no }}', this)">Remove</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.style.right = (menu.style.right === "0px") ? "-260px" : "0px";
+}
+
+// Update record
+function updateRecord(reg_no, btn){
+    const row = btn.closest('tr');
+    const checkin_date = row.querySelector('.checkin_date').innerText;
+    const checkin_time = row.querySelector('.checkin_time').innerText;
+    const checkout_date = row.querySelector('.checkout_date').innerText;
+    const checkout_time = row.querySelector('.checkout_time').innerText;
+
+    fetch('/update_checkinout', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({reg_no, checkin_date, checkin_time, checkout_date, checkout_time})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) alert('Record updated!');
+    });
+}
+
+// Remove record
+function removeRecord(reg_no, btn){
+    if(!confirm('Remove this record?')) return;
+    fetch('/remove_checkinout', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({reg_no})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) btn.closest('tr').remove();
+    });
+}
+
+// Add record
+function addRecord(){
+    const reg_no = document.getElementById('new_reg_no').value;
+    const checkin_date = document.getElementById('new_checkin_date').value;
+    const checkin_time = document.getElementById('new_checkin_time').value;
+    const checkout_date = document.getElementById('new_checkout_date').value;
+    const checkout_time = document.getElementById('new_checkout_time').value;
+
+    if(!reg_no || !checkin_date || !checkin_time) { alert('Enter required fields'); return; }
+
+    fetch('/add_checkinout', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({reg_no, checkin_date, checkin_time, checkout_date, checkout_time})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) location.reload();
+        else alert(data.message);
+    });
+}
+</script>
+
+</body>
+</html>

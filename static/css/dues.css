@@ -1,0 +1,196 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===== BODY ===== */
+body {
+    background-color: #FFE4E9; /* soft light pink */
+    color: #333;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #F28B9C;
+    padding: 12px 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.navbar img {
+    height: 50px;
+    border-radius: 10px;
+}
+
+.navbar h2 {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+/* ===== HAMBURGER ===== */
+.menu-icon {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #F28B9C;
+    z-index: 30;
+}
+
+/* ===== SIDE MENU ===== */
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: -260px;
+    width: 250px;
+    height: 100%;
+    background-color: #FADADD;
+    padding-top: 70px;
+    box-shadow: -3px 0 12px rgba(0,0,0,0.1);
+    transition: right 0.3s ease;
+    z-index: 25;
+}
+
+.side-menu a {
+    display: block;
+    padding: 12px 20px;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.side-menu a:hover {
+    background-color: #F28B9C;
+    color: #fff;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+    max-width: 1200px;
+    margin: 90px auto 30px;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    text-align: center;
+}
+
+.container h3 {
+    color: #F28B9C;
+    font-size: 26px;
+    margin-bottom: 15px;
+}
+
+/* ===== ADD BUTTON ===== */
+.container > button {
+    background-color: #F28B9C;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: 0.3s;
+}
+
+.container > button:hover {
+    background-color: #e06a7a;
+    transform: translateY(-2px);
+}
+
+/* ===== TABLE ===== */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+th, td {
+    border: 1px solid #FADADD;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #F28B9C;
+    color: #fff;
+    font-weight: 500;
+}
+
+/* Editable Cells */
+.editable {
+    background-color: #fff0f2;
+    cursor: text;
+}
+
+.editable:focus {
+    outline: 2px solid #F28B9C;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.save-btn {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.save-btn:hover,
+.delete-btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    th, td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin: 90px 10px;
+        padding: 20px;
+    }
+
+    .container h3 {
+        font-size: 22px;
+    }
+
+    .menu-icon {
+        font-size: 26px;
+    }
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hostel Management System - Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}" alt="NGH Logo">
+    </div>
+
+    <ul>
+        <li><a href="{{ url_for('student_info') }}">Student Info</a></li>
+        <li><a href="{{ url_for('floors') }}">Floors</a></li>
+        <li><a href="{{ url_for('rooms') }}">Rooms</a></li>
+        <li><a href="{{ url_for('attendance') }}">Attendance</a></li>
+        <li><a href="{{ url_for('mess') }}">Mess Info</a></li>
+        <li><a href="{{ url_for('checkin') }}">Check-In/Out</a></li>
+        <li><a href="{{ url_for('dues') }}">Dues</a></li>
+        <li><a href="{{ url_for('fund') }}">Fine/Funds</a></li>
+        <li><a href="{{ url_for('about') }}">About Us</a></li>
+    </ul>
+</nav>
+
+<!-- Main Section -->
+<div class="content">
+    <h1>Welcome, {{ user }}</h1>
+    <p>You are logged in as <b>{{ role }}</b>.</p>
+    <p>Use the navigation bar above to access any section of the hostel management system.</p>
+    <a class="logout" href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+</body>
+</html>

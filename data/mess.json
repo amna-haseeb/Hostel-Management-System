@@ -1,0 +1,29 @@
+[
+    {
+        "reg_no": "2025-ds-04",
+        "month1": 599,
+        "month2": 4000,
+        "month3": 590,
+        "status1": "Paid",
+        "status2": "Paid",
+        "status3": "Paid"
+    },
+    {
+        "reg_no": "2025-ds-21",
+        "month1": 0,
+        "month2": 0,
+        "month3": 0,
+        "status1": "Unpaid",
+        "status2": "Unpaid",
+        "status3": "Unpaid"
+    },
+    {
+        "reg_no": "2025-ds-04",
+        "month1": 0,
+        "month2": 0,
+        "month3": 0,
+        "status1": "Unpaid",
+        "status2": "Unpaid",
+        "status3": "Unpaid"
+    }
+]

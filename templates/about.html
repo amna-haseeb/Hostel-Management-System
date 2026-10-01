@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Girls Hostel | About Us</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- External CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+</head>
+
+<body>
+
+<!-- ===== HAMBURGER MENU ICON ===== -->
+<div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+
+<!-- ===== SIDE MENU ===== -->
+<div class="side-menu" id="sideMenu">
+    <a href="studentinfo.html">Student Info</a>
+    <a href="floors.html">Floors</a>
+    <a href="rooms.html">Rooms</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="mess.html">Mess Info</a>
+    <a href="8Dues.html">Check-In / Out</a>
+    <a href="dues.html">Dues</a>
+    <a href="fund.html">Fine/Funds</a>
+    <a href="about.html">About Us</a>
+</div>
+
+<!-- ===== NAVBAR ===== -->
+<div class="navbar">
+    <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}" alt="Logo">
+    <h2>New Girls Hostel</h2>
+</div>
+
+<!-- ===== CONTENT ===== -->
+<div class="container">
+    <div class="header">
+        <h1>About New Girls Hostel</h1>
+    </div>
+
+    <h2>About Us</h2>
+    <p>
+        Welcome to the University Hostel, a safe, comfortable, and well-managed living space
+        designed to support students throughout their academic journey. Our hostel serves
+        as a second home for students, providing a peaceful environment that encourages
+        both personal growth and academic excellence.
+    </p>
+
+    <p>
+        At the University Hostel, we focus on providing secure accommodation, modern facilities,
+        and an atmosphere that promotes community, discipline, and mutual respect.
+    </p>
+
+    <h2>Our Mission</h2>
+    <p>
+        To offer students a comfortable, affordable, and well-maintained accommodation
+        that supports academic focus, cultural diversity, and healthy social interaction.
+    </p>
+
+    <h2>Our Vision</h2>
+    <p>
+        To be recognized as one of the most trusted and student-friendly hostel facilities,
+        ensuring safety, comfort, and a nurturing environment that empowers students to achieve
+        their goals.
+    </p>
+
+    <div class="images">
+        <img src="images.jpg/hostelpic1.jpeg" alt="Hostel Image">
+        <img src="images.jpg/hostelpic2.jpeg" alt="Hostel Image">
+    </div>
+</div>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.style.right = (menu.style.right === "0px") ? "-260px" : "0px";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Body */
+body {
+    background: #FFE4E9; /* soft light pink */
+    color: #333;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #F28B9C; /* deeper pink */
+    padding: 12px 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.navbar .logo img {
+    height: 50px;
+    border-radius: 10px;
+}
+
+.navbar ul {
+    display: flex;
+    list-style: none;
+    gap: 12px;
+}
+
+.navbar ul li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.navbar ul li a:hover {
+    background-color: #FADADD;
+    color: #F28B9C;
+}
+
+/* Container */
+.container {
+    max-width: 950px;
+    margin: 50px auto;
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.container h1 {
+    color: #F28B9C;
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+/* Add Room Inputs and Button */
+.add-room {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.add-room input {
+    padding: 8px 10px;
+    border: 1.5px solid #FADADD;
+    border-radius: 6px;
+    outline: none;
+    width: 120px;
+    transition: border-color 0.3s ease;
+}
+
+.add-room input:focus {
+    border-color: #F28B9C;
+}
+
+.add-room button {
+    padding: 8px 14px;
+    background-color: #F28B9C;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-room button:hover {
+    background-color: #e06a7a;
+    transform: translateY(-2px);
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+th, td {
+    border: 1px solid #FADADD;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #F28B9C;
+    color: #fff;
+    font-weight: 500;
+}
+
+td[contenteditable="true"] {
+    background-color: #fff0f2;
+    cursor: text;
+}
+
+td[contenteditable="true"]:focus {
+    outline: 2px solid #F28B9C;
+}
+
+/* Buttons in Table */
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+button.update-btn {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+button.remove-btn {
+    background-color: #f44336;
+    color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        margin: 40px 20px;
+        padding: 20px;
+    }
+
+    .add-room {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    table th, table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container h1 {
+        font-size: 22px;
+    }
+}

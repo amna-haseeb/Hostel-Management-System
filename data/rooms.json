@@ -1,0 +1,8 @@
+[
+    {
+        "room_no": "111",
+        "floor_no": "1",
+        "capacity": 3,
+        "occupied": 0
+    }
+]

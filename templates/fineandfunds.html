@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fine & Funds | NGH</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fineandfunds.css') }}">
+</head>
+<body>
+
+<!-- HAMBURGER MENU -->
+<div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+
+<!-- SIDE MENU -->
+<div class="side-menu" id="sideMenu">
+   <a href="{{ url_for('student_info') }}">Student Info</a>
+   <a href="{{ url_for('floors') }}">Floors</a>
+   <a href="{{ url_for('rooms') }}">Rooms</a>
+   <a href="{{ url_for('attendance') }}">Attendance</a>
+   <a href="{{ url_for('mess') }}">Mess Info</a>
+   <a href="{{ url_for('checkin') }}">Check-In / Out</a>
+   <a href="{{ url_for('dues') }}">Dues</a>
+   <a href="{{ url_for('fund') }}">Fine/Funds</a>
+   <a href="{{ url_for('about') }}">About Us</a>
+</div>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}" alt="Logo">
+    <h2>New Girls Hostel</h2>
+</div>
+
+<!-- TABLE CONTAINER -->
+<div class="container">
+    <h3>Fine & Funds Collection</h3>
+
+    <!-- ADD NEW RECORD -->
+    <div class="add-record">
+        <input type="text" id="new_reg_no" placeholder="Reg No">
+        <input type="number" id="new_fine_amount" placeholder="Fine Amount">
+        <input type="number" id="new_fund_amount" placeholder="Fund Amount">
+        <button onclick="addRecord()">Add Record</button>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="feesTable">
+            <thead>
+                <tr>
+                    <th>Student Reg No</th>
+                    <th>Fine Amount</th>
+                    <th>Fine Status</th>
+                    <th>Fund Amount</th>
+                    <th>Fund Status</th>
+                    <th>Remaining Dues</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in fees_data %}
+                <tr data-id="{{ record.id }}">
+                    <td>{{ record.reg_no }}</td>
+                    <td>{{ record.fine_amount }}</td>
+                    <td class="fine_status">{{ record.fine_status }}</td>
+                    <td>{{ record.fund_amount }}</td>
+                    <td class="fund_status">{{ record.fund_status }}</td>
+                    <td>{{ record.remaining_dues }}</td>
+                    <td>
+                        <button onclick="toggleFine('{{ record.id }}', this)">Toggle Fine</button>
+                        <button onclick="toggleFund('{{ record.id }}', this)">Toggle Fund</button>
+                        <button onclick="removeRecord('{{ record.id }}', this)">Remove</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.style.right = (menu.style.right === "0px") ? "-260px" : "0px";
+}
+
+// Toggle fine status
+function toggleFine(record_id, btn) {
+    fetch('/toggle_fine_status', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: record_id})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            const row = btn.closest('tr');
+            row.querySelector('.fine_status').innerText = data.new_status;
+        }
+    });
+}
+
+// Toggle fund status
+function toggleFund(record_id, btn) {
+    fetch('/toggle_fund_status', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: record_id})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            const row = btn.closest('tr');
+            row.querySelector('.fund_status').innerText = data.new_status;
+        }
+    });
+}
+
+// Remove a record
+function removeRecord(record_id, btn) {
+    if(!confirm("Remove this record?")) return;
+    fetch('/remove_fee_record', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: record_id})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            btn.closest('tr').remove();
+        }
+    });
+}
+
+// Add a new record
+function addRecord() {
+    const newRecord = {
+        reg_no: document.getElementById('new_reg_no').value,
+        fine_amount: document.getElementById('new_fine_amount').value,
+        fund_amount: document.getElementById('new_fund_amount').value
+    };
+    if(!newRecord.reg_no) { alert("Enter Reg No"); return; }
+    fetch('/add_fee_record', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(newRecord)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            location.reload(); // reload page to show new row
+        }
+    });
+}
+</script>
+
+</body>
+</html>

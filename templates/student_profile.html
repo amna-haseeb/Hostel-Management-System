@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Profile | NGH</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/student_profile.css') }}">
+</head>
+<body>
+
+<div class="header">
+    <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}" alt="Hostel Logo">
+    <h2>New Girls Hostel – Student Profile</h2>
+</div>
+
+<div class="container">
+
+    <!-- PERSONAL INFO -->
+    <div class="section">
+        <h3>Personal Information</h3>
+        <div class="form-grid">
+            <label>Reg. No</label><input value="{{ student.reg_no }}" readonly>
+            <label>Name</label><input value="{{ student.full_name }}" readonly>
+            <label>Gender</label><input value="{{ student.gender }}" readonly>
+            <label>Date of Birth</label><input value="{{ student.dob }}" readonly>
+            <label>Contact</label><input value="{{ student.contact }}" readonly>
+            <label>Address</label><input value="{{ student.address }}" readonly>
+        </div>
+    </div>
+
+    <!-- GUARDIAN INFO -->
+    <div class="section">
+        <h3>Guardian Information</h3>
+        <div class="form-grid">
+            <label>Guardian</label><input value="{{ student.guardian.name }}" readonly>
+            <label>Guardian Contact</label><input value="{{ student.guardian.contact }}" readonly>
+        </div>
+    </div>
+
+    <!-- ATTENDANCE -->
+    <div class="section">
+        <h3>Attendance & Stay</h3>
+        <div class="form-grid">
+            <label>Attendance</label><input value="{{ student.attendance.status }}" readonly>
+            <label>Check-in Date</label><input value="{{ student.attendance.check_in_date }}" readonly>
+            <label>Check-in Time</label><input value="{{ student.attendance.check_in_time }}" readonly>
+            <label>Check-out Date</label><input value="{{ student.attendance.check_out_date }}" readonly>
+            <label>Check-out Time</label><input value="{{ student.attendance.check_out_time }}" readonly>
+            <label>Floor No</label><input value="{{ student.hostel.floor_no }}" readonly>
+            <label>Room No</label><input value="{{ student.hostel.room_no }}" readonly>
+        </div>
+    </div>
+
+    <!-- BILLING -->
+    <div class="section">
+        <h3>Billing & Dues</h3>
+        <div class="form-grid">
+            <label>Mess Bill</label><input value="{{ student.billing.mess_bill }}" readonly>
+            <label>Mess Status</label><input value="{{ student.billing.mess_status }}" readonly>
+            <label>Hostel Dues</label><input value="{{ student.billing.hostel_dues }}" readonly>
+            <label>Dues Status</label><input value="{{ student.billing.dues_status }}" readonly>
+            <label>Payable Fund</label><input value="{{ student.billing.payable_fund }}" readonly>
+            <label>Fund Status</label><input value="{{ student.billing.fund_status }}" readonly>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

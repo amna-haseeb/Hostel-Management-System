@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hostel Dues | NGH</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dues.css') }}">
+<style>
+    .editable { cursor: pointer; }
+    .save-btn, .delete-btn { margin: 0 2px; padding: 2px 6px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ===== HAMBURGER MENU ICON ===== -->
+<div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+
+<!-- ===== SIDE MENU ===== -->
+<div class="side-menu" id="sideMenu">
+    <a href="{{ url_for('student_info') }}">Student Info</a>
+    <a href="{{ url_for('floors') }}">Floors</a>
+    <a href="{{ url_for('rooms') }}">Rooms</a>
+    <a href="{{ url_for('attendance') }}">Attendance</a>
+    <a href="{{ url_for('mess') }}">Mess Info</a>
+    <a href="{{ url_for('checkin') }}">Check-In / Out</a>
+    <a href="{{ url_for('dues') }}">Dues</a>
+    <a href="{{ url_for('fund') }}">Fine/Funds</a>
+    <a href="{{ url_for('about') }}">About Us</a>
+</div>
+
+<!-- ===== NAVBAR ===== -->
+<div class="navbar">
+    <img src="{{ url_for('static', filename='images/NGH Logo.jpeg') }}">
+    <h2>New Girls Hostel</h2>
+</div>
+
+<!-- ===== DUES TABLE ===== -->
+<div class="container">
+    <h3>Hostel Dues</h3>
+    <button onclick="addRow()">Add Dues</button>
+    <div class="table-wrapper">
+        <table id="duesTable">
+            <thead>
+                <tr>
+                    <th>Student Reg No</th>
+                    <th>Payment ID</th>
+                    <th>Month</th>
+                    <th>Rent Amount</th>
+                    <th>Funds</th>
+                    <th>Fine</th>
+                    <th>Paid Amount</th>
+                    <th>Due Amount</th>
+                    <th>Payment Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in dues %}
+                <tr data-id="{{ d.payment_id }}">
+                    <td class="editable">{{ d.reg_no }}</td>
+                    <td>{{ d.payment_id }}</td>
+                    <td class="editable">{{ d.month }}</td>
+                    <td class="editable">{{ d.rent }}</td>
+                    <td class="editable">{{ d.funds }}</td>
+                    <td class="editable">{{ d.fine }}</td>
+                    <td class="editable">{{ d.paid }}</td>
+                    <td class="editable">{{ d.due }}</td>
+                    <td class="editable">{{ d.date }}</td>
+                    <td class="editable">{{ d.status }}</td>
+                    <td>
+                        <button class="save-btn" onclick="saveRow(this)">Save</button>
+                        <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.style.right = (menu.style.right === "0px") ? "-260px" : "0px";
+}
+
+// Add new empty row
+function addRow() {
+    const table = document.getElementById("duesTable").getElementsByTagName('tbody')[0];
+    const row = table.insertRow();
+    row.innerHTML = `
+        <td class="editable" contenteditable="true"></td>
+        <td>NEW</td>
+        <td class="editable" contenteditable="true"></td>
+        <td class="editable" contenteditable="true"></td>
+        <td class="editable" contenteditable="true"></td>
+        <td class="editable" contenteditable="true"></td>
+        <td class="editable" contenteditable="true"></td>
+        <td class="editable" contenteditable="true"></td>
+        <td class="editable" contenteditable="true"></td>
+        <td class="editable" contenteditable="true"></td>
+        <td>
+            <button class="save-btn" onclick="saveRow(this)">Save</button>
+            <button class="delete-btn" onclick="deleteRow(this)">Delete</button>
+        </td>
+    `;
+}
+
+// Save dues row
+function saveRow(btn) {
+    const row = btn.closest('tr');
+    const payment_id = row.getAttribute('data-id');
+    const data = {
+        reg_no: row.cells[0].innerText,
+        month: row.cells[2].innerText,
+        rent: row.cells[3].innerText,
+        funds: row.cells[4].innerText,
+        fine: row.cells[5].innerText,
+        paid: row.cells[6].innerText,
+        due: row.cells[7].innerText,
+        date: row.cells[8].innerText,
+        status: row.cells[9].innerText
+    };
+
+    fetch('/save_dues' + (payment_id && payment_id !== 'NEW' ? `/${payment_id}` : ''), {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(resp => {
+        if(resp.success){
+            row.setAttribute('data-id', resp.payment_id);
+            alert('Saved successfully!');
+        } else {
+            alert('Error saving record!');
+        }
+    });
+}
+
+// Delete dues row
+function deleteRow(btn) {
+    const row = btn.closest('tr');
+    const payment_id = row.getAttribute('data-id');
+    if(!payment_id || payment_id === 'NEW') { row.remove(); return; }
+
+    fetch(`/delete_dues/${payment_id}`, { method: 'POST' })
+    .then(res => res.json())
+    .then(resp => {
+        if(resp.success){
+            row.remove();
+            alert('Deleted successfully!');
+        } else {
+            alert('Error deleting record!');
+        }
+    });
+}
+</script>
+
+</body>
+</html>
